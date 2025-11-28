@@ -1,5 +1,7 @@
-Spring Security 로직 동작 순서 완전 분석
-1. 애플리케이션 시작 시 (Application Startup)
+# Spring Security 로직 동작 순서 완전 분석
+## 1. 애플리케이션 시작 시 (Application Startup)
+
+```
 [애플리케이션 시작]
     ↓
 [Spring Container 초기화]
@@ -20,8 +22,10 @@ Spring Security 로직 동작 순서 완전 분석
     └─→ userRepository.save(admin)
     ↓
 [애플리케이션 준비 완료 - 요청 대기]
+```
 
-2. 사용자가 홈페이지 접속 (미인증 상태)
+## 2. 사용자가 홈페이지 접속 (미인증 상태)
+```
 [브라우저] http://localhost:8080/ 요청
     ↓
 [Spring Security Filter Chain 진입]
@@ -61,7 +65,10 @@ Spring Security 로직 동작 순서 완전 분석
     ↓
 [로그인 폼 표시]
 
-4. 로그인 과정 (가장 중요!)
+```
+
+## 4. 로그인 과정 (가장 중요!)
+```
 4-1. 사용자가 로그인 폼 제출
 [브라우저] 로그인 폼 제출
     ├─→ username: "user"
@@ -112,7 +119,10 @@ Spring Security 로직 동작 순서 완전 분석
     }
     ↓
 [DaoAuthenticationProvider에게 CustomUserDetails 전달]
-4-4. 비밀번호 검증
+```
+
+## 4-4. 비밀번호 검증
+```
 [DaoAuthenticationProvider가 비밀번호 검증]
     ↓
 [PasswordEncoder.matches() 호출]
@@ -146,7 +156,10 @@ Spring Security 로직 동작 순서 완전 분석
     ↓
 [브라우저] /dashboard로 리다이렉트 (JSESSIONID 쿠키 포함)
 
-5. 인증 후 대시보드 접근
+```
+
+## 5. 인증 후 대시보드 접근
+```
 [브라우저] GET /dashboard 요청 (JSESSIONID 쿠키 포함)
     ↓
 [Spring Security Filter Chain]
@@ -190,7 +203,10 @@ Spring Security 로직 동작 순서 완전 분석
     ↓
 [브라우저에 HTML 응답]
 
-6. 권한이 필요한 페이지 접근 (인가 과정)
+```
+
+## 6. 권한이 필요한 페이지 접근 (인가 과정)
+```
 6-1. USER가 /admin 페이지 접근 시도
 [브라우저] GET /admin/something 요청 (USER 권한으로 로그인 상태)
     ↓
@@ -221,7 +237,10 @@ Spring Security 로직 동작 순서 완전 분석
 [templates/access-denied.html 렌더링]
     ↓
 [브라우저에 "접근 거부" 페이지 표시]
-6-2. ADMIN이 /admin 페이지 접근
+
+```
+## 6-2. ADMIN이 /admin 페이지 접근
+```
 [브라우저] GET /admin/something 요청 (ADMIN 권한으로 로그인)
     ↓
 [Spring Security Filter Chain]
@@ -242,7 +261,10 @@ Spring Security 로직 동작 순서 완전 분석
 [해당 컨트롤러로 요청 전달]
     └─→ 정상 처리
 
-7. 로그아웃 과정
+```
+
+## 7. 로그아웃 과정
+```
 [브라우저] POST /logout 요청 (Spring Security가 자동 처리)
     ↓
 [LogoutFilter 동작]
@@ -261,7 +283,10 @@ Spring Security 로직 동작 순서 완전 분석
     ↓
 [브라우저] 로그인 페이지로 이동
 
-전체 흐름도 (요약)
+```
+
+### 전체 흐름도 (요약)
+```
 [애플리케이션 시작]
     ↓
 [초기 데이터 생성 (user, admin)]
@@ -288,7 +313,8 @@ Spring Security 로직 동작 순서 완전 분석
                            ↓
                     [이후 모든 요청에 인증 정보 포함]
 
-핵심 포인트 정리
+```
+ ### 핵심 포인트 정리
 1. Security Filter Chain은 모든 요청을 가로챕니다
 
 컨트롤러 실행 전에 먼저 동작
